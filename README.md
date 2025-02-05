@@ -58,7 +58,7 @@ This app uses **WISPr-Bandwidth-Max-Up/Down** for bandwidth limits.
 ### **1. Clone the repository**  
 
 ```sh
-git clone https://github.com/yourusername/FreeRADIUS-Manager-for-pfSense.git
+git clone https://github.com/mmk-cp/RadiusAdminPanel.git
 cd FreeRADIUS-Manager-for-pfSense
 ```
 
