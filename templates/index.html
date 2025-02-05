@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container" xmlns="http://www.w3.org/1999/html">
+        <div class="row justify-content-center text-center">
+            <div class="col justify-content-center">
+                <br>
+                <br>
+                <a href="/users">
+                    <button class="btn btn-primary">Manage Users</button>
+                </a>
+                <br>
+                <hr>
+                <br>
+                <a href="/usage?date_type=jalali">
+                    <button class="btn btn-secondary">Usage Statistics (jalali)</button>
+                </a>
+                <a href="/usage?date_type=gregorian">
+                    <button class="btn btn-secondary">Usage Statistics (Gregorian)</button>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

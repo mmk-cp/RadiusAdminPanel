@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Set Bandwidth Limits for {{ username }}</h2>
+
+    <form action="{{ url_for('set_bandwidth', username=username) }}" method="POST" class="mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="max_upload_speed" class="form-label">Max Upload Speed (bps)</label>
+                <input type="number" name="max_upload_speed" class="form-control" placeholder="Upload Speed" required>
+            </div>
+            <div class="col-auto">
+                <label for="max_download_speed" class="form-label">Max Download Speed (bps)</label>
+                <input type="number" name="max_download_speed" class="form-control" placeholder="Download Speed"
+                       required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Set Limits</button>
+            </div>
+        </div>
+    </form>
+    <a href="{{ url_for('users') }}" class="btn btn-secondary">Back to Users</a>
+{% endblock %}

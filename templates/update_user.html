@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">تغییر رمز عبور</h2>
+
+<!-- Update User Form -->
+<form action="{{ url_for('update_user', username=username) }}" method="POST" class="mb-4">
+    <div class="form-row align-items-center">
+        <div class="col-md-4 mb-3">
+            <label for="password" class="sr-only">New Password for {{ username }}</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password" required>
+        </div>
+        <div class="col-md-4 mb-3">
+            <button type="submit" class="btn btn-primary btn-block">بروز رسانی رمز</button>
+        </div>
+    </div>
+</form>
+
+<!-- Back Button -->
+<a href="{{ url_for('users') }}" class="btn btn-secondary">بازگشت به کاربران</a>
+{% endblock %}

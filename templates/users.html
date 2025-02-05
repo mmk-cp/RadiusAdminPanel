@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <!-- Include jQuery Confirm CSS and JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Manage Users</h2>
+
+    <!-- Add User Form -->
+    <form action="/add_user" method="POST" class="mb-4">
+        <div class="form-row align-items-center">
+            <div class="col-md-4 mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Username" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button type="submit" class="btn btn-primary btn-block">Add User</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- User List Table -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Max Upload Speed (bps)</th>
+            <th>Max Download Speed (bps)</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user[0] }}</td>
+                <td>{{ user[1] or 'N/A' }}</td>
+                <td>{{ user[2] or 'N/A' }}</td>
+                <td>{{ user[3] or 'N/A' }}</td>
+                <td>
+                    <a href="/update_user/{{ user[0] }}" class="btn btn-warning btn-sm">Update</a>
+                    <a href="/set_bandwidth/{{ user[0] }}" class="btn btn-info btn-sm">Set Bandwidth</a>
+                    <form action="{{ url_for('delete_bandwidth', username=user[0]) }}" method="POST"
+                          style="display:inline;">
+                        <button type="submit" class="btn btn-secondary btn-sm">Delete Bandwidth</button>
+                    </form>
+                    <button id="user-{{ user[0] }}" class="btn btn-danger btn-sm deleteUserBtn">Delete</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+
+        $('.deleteUserBtn').click(function (e) {
+            let userId = e.currentTarget.id;
+            userId = userId.split("-");
+            userId = userId[1];
+            let deleteUrl = '/delete_user/' + userId;
+
+            $.confirm({
+                title: 'هشدار :',
+                content: 'آیا از حذف کاربر مطمئن هستید؟',
+                draggable: false,
+                rtl: true,
+                buttons: {
+                    confirm: {
+                        text: 'تایید',
+                        btnClass: 'btn-danger',
+                        action: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: deleteUrl,
+                                success: function (response) {
+                                    location.reload(); // Reload the page after successful deletion
+                                },
+                                error: function (xhr, status, error) {
+                                    alert("An error occurred while deleting the user.");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        text: 'انصراف',
+                        btnClass: 'btn-success',
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

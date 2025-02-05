@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <link href="/static/persianDatePicker/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet"
+          type="text/css"/>
+    <script src="/static/persianDatePicker/jquery.md.bootstrap.datetimepicker.js"></script>
+
+    <!-- Include Bootstrap Datepicker for Gregorian -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Usage Statistics</h2>
+
+    <!-- Date Type Check -->
+    {% set date_type = request.args.get('date_type', 'jalali') %}
+
+    <!-- Date Range Selection Form -->
+    <form action="{{ url_for('usage') }}" method="GET" class="mb-4">
+        <input type="hidden" name="date_type" value="{{ date_type }}">
+
+        <div class="form-row align-items-center">
+            {% if date_type == 'jalali' %}
+                <!-- Jalali Date Picker -->
+                <div class="col-md-4 mb-3">
+                    <label for="internet_start_date" class="sr-only">Start Date (Format: 1403/10/10)</label>
+                    <input type="text" id="internet_start_date" name="start_date" class="form-control"
+                           placeholder="Start Date (Format: 1403/10/10)" autocomplete="off" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="internet_end_date" class="sr-only">End Date (Format: 1403/10/10)</label>
+                    <input type="text" id="internet_end_date" name="end_date" class="form-control"
+                           placeholder="End Date (Format: 1403/10/10)" autocomplete="off" required>
+                </div>
+            {% else %}
+                <!-- Gregorian Date Picker -->
+                <div class="col-md-4 mb-3">
+                    <label for="gregorian_start_date" class="sr-only">Start Date (YYYY-MM-DD)</label>
+                    <input type="text" id="gregorian_start_date" name="start_date" class="form-control datepicker"
+                           placeholder="Start Date (YYYY-MM-DD)" autocomplete="off" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="gregorian_end_date" class="sr-only">End Date (YYYY-MM-DD)</label>
+                    <input type="text" id="gregorian_end_date" name="end_date" class="form-control datepicker"
+                           placeholder="End Date (YYYY-MM-DD)" autocomplete="off" required>
+                </div>
+            {% endif %}
+
+            <div class="col-md-4 mb-3">
+                <button type="submit" class="btn btn-primary btn-block">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display Usage Data -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Download (GB)</th>
+            <th>Upload (GB)</th>
+            <th>Total Usage (GB)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if usage_data %}
+            {% for data in usage_data %}
+                <tr>
+                    <td>{{ data[0] }}</td>
+                    <td>{{ "%.2f"|format(data[1]) }}</td>
+                    <td>{{ "%.2f"|format(data[2]) }}</td>
+                    <td>{{ "%.2f"|format(data[3]) }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No data available for the selected date range.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var dateType = "{{ date_type }}";
+
+            if (dateType === "jalali") {
+                // Jalali Date Picker
+                $('#internet_start_date').MdPersianDateTimePicker({
+                    targetTextSelector: '#internet_start_date',
+                    textFormat: 'yyyy/MM/dd',
+                    dateFormat: 'yyyy/MM/dd',
+                    onDayClick: function () {
+                        convertPersianDigitToEnglish('#internet_start_date')
+
+                    }
+                });
+                $('#internet_start_date').on('change', function () {
+                    convertPersianDigitToEnglish('#internet_start_date');
+                });
+
+
+                $('#internet_end_date').MdPersianDateTimePicker({
+                    targetTextSelector: '#internet_end_date',
+                    textFormat: 'yyyy/MM/dd',
+                    dateFormat: 'yyyy/MM/dd',
+                    onDayClick: function () {
+                        convertPersianDigitToEnglish('#internet_end_date')
+
+                    }
+                });
+                $('#internet_end_date').on('change', function () {
+                    convertPersianDigitToEnglish('#internet_end_date');
+                });
+
+            } else {
+                // Gregorian Date Picker
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+        });
+    </script>
+
+{% endblock %}
